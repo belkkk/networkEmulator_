@@ -1,8 +1,7 @@
 package com.example.network.emulator.models;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,41 +16,21 @@ public class NetworkConfiguration {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "configuration")
+    @OneToMany(mappedBy = "configuration", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"configuration"})
     private List<Device> devices = new ArrayList<>();
 
-    @OneToMany(mappedBy = "networkConfiguration")
+    @OneToMany(mappedBy = "configuration", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"configuration"})
     private List<Connection> connections = new ArrayList<>();
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public List<Device> getDevices() { return devices; }
+    public List<Connection> getConnections() { return connections; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDevices(List<Device> devices) {
-        this.devices = devices;
-    }
-
-    public void setConnections(List<Connection> connections) {
-        this.connections = connections;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public List<Device> getDevices() {
-        return devices;
-    }
-
-    public List<Connection> getConnections() {
-        return connections;
-    }
+    public void setId(Long id) { this.id = id; }
+    public void setName(String name) { this.name = name; }
+    public void setDevices(List<Device> devices) { this.devices = devices; }
+    public void setConnections(List<Connection> connections) { this.connections = connections; }
 }

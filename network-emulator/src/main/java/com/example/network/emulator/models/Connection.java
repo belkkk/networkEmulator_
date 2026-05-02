@@ -1,60 +1,41 @@
 package com.example.network.emulator.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Data;
 
 @Entity
 @Table(name = "connections")
-@Data
 public class Connection {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "from_device_id", nullable = false)
-    private Device fromDeviceId;
+    @JsonIgnoreProperties({"configuration"})
+    private Device fromDevice;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "to_device_id", nullable = false)
-    private Device toDeviceId;
+    @JsonIgnoreProperties({"configuration"})
+    private Device toDevice;
 
-    @ManyToOne
-    @JoinColumn(name = "configuration_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "configuration_id", nullable = false)
     @JsonIgnore
-    private NetworkConfiguration networkConfiguration;
+    private NetworkConfiguration configuration;
 
-    public NetworkConfiguration getNetworkConfiguration() {
-        return networkConfiguration;
-    }
+    public Connection() {}
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public Device getFromDevice() { return fromDevice; }
+    public Device getToDevice() { return toDevice; }
+    public NetworkConfiguration getConfiguration() { return configuration; }
 
-    public Device getFromDeviceId() {
-        return fromDeviceId;
-    }
-
-    public Device getToDeviceId() {
-        return toDeviceId;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setFromDeviceId(Device fromDeviceId) {
-        this.fromDeviceId = fromDeviceId;
-    }
-
-    public void setToDeviceId(Device toDeviceId) {
-        this.toDeviceId = toDeviceId;
-    }
-
-    public void setConfiguration(NetworkConfiguration networkConfiguration) {
-        this.networkConfiguration = networkConfiguration;
-    }
+    public void setId(Long id) { this.id = id; }
+    public void setFromDevice(Device fromDevice) { this.fromDevice = fromDevice; }
+    public void setToDevice(Device toDevice) { this.toDevice = toDevice; }
+    public void setConfiguration(NetworkConfiguration configuration) { this.configuration = configuration; }
 }

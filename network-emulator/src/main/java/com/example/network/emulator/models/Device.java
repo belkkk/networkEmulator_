@@ -7,12 +7,14 @@ import lombok.Data;
 
 @Entity
 @Table(name = "devices")
-@Data
 public class Device {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "device_number")
+    private Integer deviceNumber;
 
     @Column(nullable = false)
     private String ip;
@@ -26,10 +28,22 @@ public class Device {
     @Column(nullable = false)
     private int y;
 
-    @ManyToOne
-    @JoinColumn(name = "configuration_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "configuration_id", nullable = false)
     @JsonIgnore
     private NetworkConfiguration configuration;
+
+    public Device(Long id, Integer deviceNumber, String ip, String type, int x, int y, NetworkConfiguration configuration) {
+        this.id = id;
+        this.deviceNumber = deviceNumber;
+        this.ip = ip;
+        this.type = type;
+        this.x = x;
+        this.y = y;
+        this.configuration = configuration;
+    }
+
+    public Device(){}
 
     public Long getId() {
        return id;
@@ -55,12 +69,20 @@ public class Device {
         this.y = y;
     }
 
+    public void setDeviceNumber(Integer deviceNumber) {
+        this.deviceNumber = deviceNumber;
+    }
+
     public String getIp() {
         return ip;
     }
 
     public String getType() {
         return type;
+    }
+
+    public Integer getDeviceNumber() {
+        return deviceNumber;
     }
 
     public int getX() {

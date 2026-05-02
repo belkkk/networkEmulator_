@@ -11,9 +11,9 @@ import java.util.List;
 @Repository
 public interface ConnectionRepository extends JpaRepository<Connection, Long> {
 
-    @Query("SELECT c FROM Connection c WHERE c.fromDeviceId.id = :fromId")
-    List<Connection> findByFromDeviceId(@Param("fromId") Long fromId);
+    @Query("SELECT c FROM Connection c WHERE c.fromDevice.id = :fromId")
+    List<Connection> findByFromDevice(@Param("fromId") Long fromDevice);
 
-    @Query("SELECT c FROM Connection c WHERE c.toDeviceId.id = :toId")
-    List<Connection> findByToDeviceId(@Param("toId") Long toId);
+    @Query("SELECT c FROM Connection c WHERE c.toDevice.id = :toId")
+    List<Connection> findByToDevice(@Param("toId") Long toDevice);
 }

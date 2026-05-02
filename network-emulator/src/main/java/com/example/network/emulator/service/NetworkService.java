@@ -10,7 +10,9 @@ import com.example.network.emulator.repositories.NetworkConfigurationRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,11 +32,15 @@ public class NetworkService {
 
     public CheckResponse checkConnectivity(CheckRequest request) {
 
+        for(Device device : request.getDevices()){
+            device.setId(device.getDeviceNumber().longValue());
+        }
+
         List<Long> path = bfsService.findPath(
                 request.getConnections(),
                 request.getDevices(),
-                request.getFromDeviceId(),
-                request.getToDeviceId()
+                request.getFromDeviceNumber(),
+                request.getToDeviceNumber()
         );
 
         return new CheckResponse(path);
@@ -44,25 +50,33 @@ public class NetworkService {
     public ConfigurationInfoResponse saveConfiguration(SaveConfigurationRequest request) {
         NetworkConfiguration config = new NetworkConfiguration();
         config.setName(request.getName());
-        config = configurationRepository.save(config);  // сохраняем конфигурацию сразу
+        config = configurationRepository.save(config);
 
-        // Явно сохраняем устройства (без каскада от конфигурации)
+
+        Map<Integer, Device> deviceByNumber = new HashMap<>();
+
         for (Device device : request.getDevices()) {
-            device.setId(null);
+            Integer deviceNumber = device.getDeviceNumber();
+            device.setId(null);                     // обнуляем глобальный ID
             device.setConfiguration(config);
+            Device savedDevice = deviceRepository.save(device);
+            deviceByNumber.put(deviceNumber, savedDevice);
         }
-        deviceRepository.saveAll(request.getDevices());  // ← явный вызов
-        // Теперь у всех устройств есть реальные ID в базе
 
-        // Сохраняем соединения
         for (Connection connection : request.getConnections()) {
+            // Клиент прислал fromDevice и toDevice с заполненным deviceNumber
+            Integer fromNumber = connection.getFromDevice().getDeviceNumber();
+            Integer toNumber = connection.getToDevice().getDeviceNumber();
+
+            Device savedFrom = deviceByNumber.get(fromNumber);
+            Device savedTo = deviceByNumber.get(toNumber);
+
             connection.setId(null);
+            connection.setFromDevice(savedFrom);
+            connection.setToDevice(savedTo);
             connection.setConfiguration(config);
         }
-        connectionRepository.saveAll(request.getConnections());  // ← явный вызов
-
-        // Не вызываем config.setDevices() и config.setConnections() —
-        // пусть каскад не пытается сохранить всё сам
+        connectionRepository.saveAll(request.getConnections());
 
         return new ConfigurationInfoResponse(config.getId(), config.getName());
     }

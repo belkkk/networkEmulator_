@@ -10,16 +10,33 @@ public class CheckRequest {
 
     private List<Connection> connections;
 
-    private Long fromDeviceId;
-    private Long toDeviceId;
+    private Long fromDeviceNumber;
+    private Long toDeviceNumber;
 
-    public CheckRequest(List<Device> devices, List<Connection> connections, Long fromDeviceId, Long toDeviceId) {
+    public CheckRequest(List<Device> devices, List<Connection> connections, Long fromDeviceNumber, Long toDeviceNumber) {
         this.devices = devices;
         this.connections = connections;
-        this.fromDeviceId = fromDeviceId;
-        this.toDeviceId = toDeviceId;
+        this.fromDeviceNumber = fromDeviceNumber;
+        this.toDeviceNumber = toDeviceNumber;
     }
 
+    private CheckRequest(){}
+
+    public void setConnections(List<Connection> connections) {
+        this.connections = connections;
+    }
+
+    public void setDevices(List<Device> devices) {
+        this.devices = devices;
+    }
+
+    public void setFromDeviceNumber(Long fromDeviceNumber) {
+        this.fromDeviceNumber = fromDeviceNumber;
+    }
+
+    public void setToDeviceNumber(Long toDeviceNumber) {
+        this.toDeviceNumber = toDeviceNumber;
+    }
 
     public List<Device> getDevices() {
         return devices;
@@ -29,27 +46,11 @@ public class CheckRequest {
         return connections;
     }
 
-    public Long getFromDeviceId() {
-        return fromDeviceId;
+    public Long getFromDeviceNumber() {
+        return fromDeviceNumber;
     }
 
-    public Long getToDeviceId() {
-        return toDeviceId;
-    }
-
-    public void setDevices(List<Device> devices) {
-        this.devices = devices;
-    }
-
-    public void setConnections(List<Connection> connections) {
-        this.connections = connections;
-    }
-
-    public void setFromDeviceId(Long fromDeviceId) {
-        this.fromDeviceId = fromDeviceId;
-    }
-
-    public void setToDeviceId(Long toDeviceId) {
-        this.toDeviceId = toDeviceId;
+    public Long getToDeviceNumber() {
+        return toDeviceNumber;
     }
 }
